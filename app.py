@@ -3,6 +3,7 @@ import sqlite3, random, string, os
 
 app = Flask(__name__)
 DB_PATH = 'urls.db'
+TELEGRAM_URL = 'https://t.me/+0wsZAVlDft80M2Q1'
 
 def db():
     conn = sqlite3.connect(DB_PATH)
@@ -26,7 +27,7 @@ def make_code(n=6):
                 return code
 
 PAGE = '''
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>나만의 단축 URL</title>
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>관리자</title>
 <style>
 body{font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;background:#f5f5f5}
 h1{color:#333}input,select,button{padding:10px;margin:5px;font-size:14px}
@@ -34,7 +35,7 @@ input{width:60%}button{background:#03c75a;color:#fff;border:0;cursor:pointer;bor
 .item{background:#fff;padding:10px;margin:5px 0;border-radius:4px;display:flex;justify-content:space-between}
 .code{color:#03c75a;font-weight:bold}.del{background:#e74c3c;color:#fff;border:0;padding:5px 10px;cursor:pointer;border-radius:4px}
 </style></head><body>
-<h1>🔗 나만의 단축 URL</h1>
+<h1>🔗 단축 URL 관리</h1>
 <div>
   <input id="url" placeholder="긴 주소 입력 (https://...)">
   <select id="dst"><option value="web">웹으로 열기</option><option value="nmap">네이버 지도 앱</option></select>
@@ -69,6 +70,10 @@ load();
 
 @app.route('/')
 def home():
+    return redirect(TELEGRAM_URL, code=302)
+
+@app.route('/admin')
+def admin():
     return render_template_string(PAGE)
 
 @app.route('/create', methods=['POST'])
