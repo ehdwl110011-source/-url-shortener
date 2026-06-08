@@ -5,6 +5,11 @@ app = Flask(__name__)
 DB_PATH = 'urls.db'
 TELEGRAM_URL = 'https://t.me/+0wsZAVlDft80M2Q1'
 
+# 미리보기 정보
+OG_TITLE = '이럴때일수록 잃지않는법'
+OG_DESC = '혼자가 아닙니다'
+OG_IMAGE = 'https://i.ibb.co/ycmjZXPS/image.png'
+
 def db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -70,7 +75,31 @@ load();
 
 @app.route('/')
 def home():
-    return redirect(TELEGRAM_URL, code=302)
+    html = f'''<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{OG_TITLE}</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="{OG_TITLE}">
+<meta property="og:description" content="{OG_DESC}">
+<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:url" content="https://url-shortener-kn6p.onrender.com">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{OG_TITLE}">
+<meta name="twitter:description" content="{OG_DESC}">
+<meta name="twitter:image" content="{OG_IMAGE}">
+<meta http-equiv="refresh" content="0; url={TELEGRAM_URL}">
+<script>window.location.href="{TELEGRAM_URL}";</script>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding-top:80px;background:#f5f5f5">
+<h2>{OG_TITLE}</h2>
+<p>{OG_DESC}</p>
+<p style="color:gray">잠시만 기다려주세요...</p>
+<p><a href="{TELEGRAM_URL}">자동으로 이동하지 않으면 클릭</a></p>
+</body>
+</html>'''
+    return html
 
 @app.route('/admin')
 def admin():
